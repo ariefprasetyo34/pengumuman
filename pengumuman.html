@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TKA 2025 SMA Negeri 1 Purwokerto</title>
+
+<style>
+body{
+  font-family: Arial, Helvetica, sans-serif;
+  background:#f2f2f2;
+  margin:0;
+}
+
+.container{
+  max-width:900px;
+  margin:30px auto;
+  background:#ffffff;
+  border-radius:8px;
+  box-shadow:0 4px 12px rgba(0,0,0,.15);
+  overflow:hidden;
+}
+
+.header{
+  background:#1a0f6e;
+  color:#ffffff;
+  text-align:center;
+  padding:30px 20px;
+}
+
+.header img{
+  width:90px;
+  margin-bottom:10px;
+}
+
+.content{
+  padding:30px;
+}
+
+.intro{
+  margin-bottom:25px;
+}
+
+.intro ul{
+  margin:10px 0 0 20px;
+}
+
+.input-group{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  justify-content:center;
+  margin:25px 0;
+}
+
+input{
+  padding:12px;
+  font-size:15px;
+  width:200px;
+}
+
+button{
+  padding:12px 22px;
+  font-size:15px;
+  cursor:pointer;
+  background:#1a0f6e;
+  color:#fff;
+  border:none;
+  border-radius:4px;
+}
+
+button:hover{
+  opacity:0.9;
+}
+
+.row{
+  display:grid;
+  grid-template-columns:200px 1fr;
+  border-bottom:1px solid #ddd;
+  padding:8px 0;
+}
+
+.label{
+  font-weight:bold;
+}
+
+.error{
+  color:red;
+  text-align:center;
+  margin-top:20px;
+}
+
+.loading{
+  text-align:center;
+  margin-top:20px;
+  font-style:italic;
+}
+
+.back{
+  text-align:center;
+  margin-top:30px;
+}
+.back a{
+  text-decoration:none;
+  color:#1a0f6e;
+  font-weight:bold;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <div class="header">
+    <img src="https://github.com/ariefprasetyo34/pengumuman/blob/assets/smansa.png?raw=true" alt="Logo SMAN 1 Purwokerto">
+    <h2>PENGUMUMAN HASIL TKA 2025</h2>
+    <p>SMA Negeri 1 Purwokerto</p>
+  </div>
+
+  <div class="content">
+
+    <!-- PENGANTAR & PANDUAN -->
+    <div class="intro">
+      <p style="line-height:1.9; text-align:justify;">
+        Pengumuman hasil Tes Kemampuan Akademik (TKA) Tahun 2025 dapat diakses
+        oleh peserta didik sesuai dengan ketentuan yang berlaku.
+      </p>
+
+      <ul>
+        <li>Masukkan NISN pada laman pengumuman</li>
+        <li>Periksa data dengan cermat</li>
+        <li>Hubungi pihak sekolah jika terdapat ketidaksesuaian</li>
+      </ul>
+    </div>
+
+    <!-- FORM CEK -->
+    <div class="input-group">
+      <input id="nisn" placeholder="NISN">
+      <input id="password" type="password" placeholder="Password">
+      <button onclick="cek()">Cek</button>
+    </div>
+
+    <!-- HASIL -->
+    <div id="hasil"></div>
+
+    <!-- KEMBALI -->
+    <div class="back">
+      <a href="index.html">← Kembali ke Sambutan Kepala Sekolah</a>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const API_URL = "https://script.google.com/macros/s/AKfycbz-Zb7WhsL6YopGxv3mqbX-rT791pVMI-BTQEjBSU3PyamLfjoBRA4k_4RNl-31eeETEQ/exec";
+
+function cek(){
+  const nisn = document.getElementById("nisn").value.trim();
+  const password = document.getElementById("password").value.trim();
+  const hasil = document.getElementById("hasil");
+
+  if(!nisn || !password){
+    hasil.innerHTML = `<div class="error">NISN dan Password wajib diisi.</div>`;
+    return;
+  }
+
+  hasil.innerHTML = `<div class="loading">Memproses data...</div>`;
+
+  fetch(`${API_URL}?nisn=${encodeURIComponent(nisn)}&password=${encodeURIComponent(password)}`)
+    .then(r => r.json())
+    .then(d => {
+      if(d.status === "ok"){
+        hasil.innerHTML = `
+          <div class="row"><div class="label">Nama</div><div>${d.nama}</div></div>
+          <div class="row"><div class="label">TTL</div><div>${d.ttl}</div></div>
+          <div class="row"><div class="label">Bahasa Indonesia</div><div>${d.indo}</div></div>
+          <div class="row"><div class="label">Matematika</div><div>${d.mtk}</div></div>
+          <div class="row"><div class="label">Bahasa Inggris</div><div>${d.ing}</div></div>
+          <div class="row"><div class="label">${d.pil1_mapel}</div><div>${d.pil1_nilai}</div></div>
+          <div class="row"><div class="label">${d.pil2_mapel}</div><div>${d.pil2_nilai}</div></div>
+        `;
+      } else {
+        hasil.innerHTML = `<div class="error">${d.pesan}</div>`;
+      }
+    })
+    .catch(() => {
+      hasil.innerHTML = `<div class="error">Gagal menghubungi server.</div>`;
+    });
+}
+</script>
+
+</body>
+</html>
